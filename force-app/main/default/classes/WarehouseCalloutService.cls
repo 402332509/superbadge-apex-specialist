@@ -15,16 +15,18 @@ public with sharing class WarehouseCalloutService {
         List<Equipment> equpiments = (List<Equipment>)JSON.deserialize(response.getBody(), List<Equipment>.class);
         List<Product2> pList = new List<Product2>();
         for(Equipment equipment : equpiments){
-            Product2 p = new Product2(
-                Replacement_Part__c = true,
-                Cost__c = equipment.cost,
-                Name = equipment.name,
-                Current_Inventory__c = equipment.quantity,
-                Lifespan_Months__c = equipment.lifespan,
-                Maintenance_Cycle__c = equipment.maintenanceperiod,
-                Warehouse_SKU__c = equipment.sku
-            );
-            pList.add(p);
+            if(equipment.replacement){
+                Product2 p = new Product2(
+                    Replacement_Part__c = true,
+                    Cost__c = equipment.cost,
+                    Name = equipment.name,
+                    Current_Inventory__c = equipment.quantity,
+                    Lifespan_Months__c = equipment.lifespan,
+                    Maintenance_Cycle__c = equipment.maintenanceperiod,
+                    Warehouse_SKU__c = equipment.sku
+                );
+                pList.add(p);
+            }
         }
         if(!pList.isEmpty()){
             upsert pList Warehouse_SKU__c;
